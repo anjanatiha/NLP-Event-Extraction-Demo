@@ -120,6 +120,7 @@ def get_basic_annotations_from_EVENTS(text, lang="eng", ret_verb_srl=True):
         cache_EE = cache.load('EE')
 
     if hash_value in cache_EE[lang].keys():
+        verb_srl = {}
         tokens, endPositions, res_json, cache_EE = cache.read('Event', cache_EE, lang, hash_value)
         if ret_verb_srl:
             return tokens, endPositions, res_json, verb_srl
