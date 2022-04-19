@@ -5,9 +5,12 @@ import requests
 import hashlib
 from time import time
 from datetime import datetime
+
 import cherrypy
+
 import tabular
 import cacheEventExtract
+
 
 ################################ Sys parameters ###############################
 serviceURL = sys.argv[1]
@@ -176,6 +179,8 @@ def getEVENTS(text):
     # res_json = json.loads(res_out.text)
     return res_out.json()
 '''
+
+
 def getSTORYLINE(events_json, text=None):
     global cache_EE
     lang="eng"
@@ -232,6 +237,7 @@ def getSTORYLINE(events_json, text=None):
         cache_EE = cache.add('Coref', cache_EE, lang, text, hash_value, res_out_json)
     return res_out_json # res_out.json()
 
+
 '''
 def getTEMPORAL_OLD(eventsOutput):
     input = eventsOutput
@@ -260,6 +266,7 @@ def getTEMPORAL_OLD(eventsOutput):
     # res_json = json.loads(res_out.text)
     return res_out_json # {} # res_out.json()
 '''
+
 def getTEMPORAL(eventsOutput, verb_srl, text=None):  #add 'text' argument for checking if the Temporal annotations of the text has already existed.
     global cache_EE
     lang="eng"
@@ -322,6 +329,7 @@ def getTEMPORAL(eventsOutput, verb_srl, text=None):  #add 'text' argument for ch
 
     return res_out_json # {} # res_out.json()
 
+
 def initView(myTabularView,text, ret_verb_srl=False):
     myTabularView.setText(text)
     if ret_verb_srl:
@@ -343,6 +351,8 @@ def initView(myTabularView,text, ret_verb_srl=False):
         return annjsonEvents,verb_srl
     else:
         return annjsonEvents
+
+
 '''
 #def processNER(myTabularView,text):
 def processNER(myTabularView,annjson):
@@ -385,7 +395,6 @@ def processTIM(myTabularView,text):
         myTabularView.addSpanLabelView(annjson,"TIMEX3","Timex3")
 '''
 
-
 '''
 def processEVENTS(myTabularView,text):
     annjson = getEVENTS(text)
@@ -402,6 +411,7 @@ def processEVENTS(myTabularView,text):
         myTabularView.addRelationView(annjson,"Event_extraction","Events")
     return annjson
 '''
+
 def processEVENTS(myTabularView, annjson):
     if "tokens" in annjson:
         tokens = annjson["tokens"]
@@ -431,6 +441,7 @@ def processTEMPORAL_OLD(myTabularView,eventsOutput):
         # if len(tokens) != len(myTabularView.getTokens()): return
         myTabularView.addRelationView(annjson,"Event_extraction","Temporal")
 '''
+
 def processTEMPORAL(myTabularView, eventsOutput, verb_srl, text=None):
     annjson = getTEMPORAL(eventsOutput, verb_srl, text)
 
@@ -488,6 +499,7 @@ def processCOREF(myTabularView, eventsOutput, text=None):
             coref_view.append(r)
 
     return annjson, coref_view
+
 
 def doProcess(myTabularView, text=None, anns=None, ret_verb_srl=False):
     eventsOutput = None
@@ -558,6 +570,7 @@ def doProcess(myTabularView, text=None, anns=None, ret_verb_srl=False):
     # return json.dumps( myTabularView.getTokens() )
     return myTabularView.HTML()
 
+
 class MyWebService(object):
 
     _myTabularView = None
@@ -612,6 +625,7 @@ class MyWebService(object):
         result = cache_EE
         return result
 
+
 if __name__ == '__main__':
     print ("")
     print ("Starting 'CogComp' rest service...")
@@ -639,6 +653,7 @@ if __name__ == '__main__':
         'tools.gzip.on'         : True
       },
     }
+    
     cherrypy.config.update(config)
     cherrypy.quickstart(MyWebService(), '/', config)
 
